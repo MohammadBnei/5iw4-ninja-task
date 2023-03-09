@@ -7,6 +7,7 @@ import {
   ListTasksRequest,
   ListTasksResponse,
   Task,
+  UpdateTaskRequest,
 } from 'src/stubs/task/v1alpha/task';
 
 import { TaskService } from './task.service';
@@ -40,6 +41,20 @@ export class TaskController {
   }
 
   @GrpcMethod('TaskService')
+  async GetTask(request: GetTaskRequest): Promise<Task> {
+    const task = request.id;
+
+    return this.taskService.findById(task) as any;
+  }
+
+  @GrpcMethod('TaskService')
+  async UpdateTask(request: UpdateTaskRequest) {
+    const task = request.task;
+
+    return this.taskService.update(task.id, task as any) as any;
+  }
+
+  @GrpcMethod('TaskService')
   async DeleteTask(request: DeleteTaskRequest): Promise<Task> {
     const task = request.id;
 
@@ -48,12 +63,5 @@ export class TaskController {
     console.log('task', task);
 
     return this.taskService.remove(task) as any;
-  }
-
-  @GrpcMethod('TaskService')
-  async GetTask(request: GetTaskRequest): Promise<Task> {
-    const task = request.id;
-
-    return this.taskService.findById(task) as any;
   }
 }
