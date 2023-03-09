@@ -3,6 +3,7 @@ import { TaskService } from './task.service';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
   CreateTaskRequest,
+  GetTaskRequest,
   ListTasksRequest,
   ListTasksResponse,
   Status,
@@ -36,5 +37,17 @@ export class TaskController {
     console.log({ res });
 
     return res;
+  }
+
+  @GrpcMethod('TaskService')
+  async GetTask(request: GetTaskRequest): Promise<Task> {
+    const task = await this.taskService.findById(request.id);
+
+    return Task.create({
+      title: task.title,
+      description: task.description,
+      dueDate: task.dueDate.toISOString(),
+      status: Status[task.status],
+    });
   }
 }

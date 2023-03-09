@@ -5,12 +5,16 @@ import {
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Status } from '@prisma/client';
 
 @Injectable()
 export class TaskService {
   constructor(private prisma: PrismaService) {}
 
   create(createTaskDto: CreateTaskDto) {
+    createTaskDto.dueDate = new Date(createTaskDto.dueDate);
+    createTaskDto.status = Status.todo;
+
     return this.prisma.task.create({
       data: createTaskDto,
     });
