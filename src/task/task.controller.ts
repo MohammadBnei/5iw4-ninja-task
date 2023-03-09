@@ -2,11 +2,13 @@ import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
   CreateTaskRequest,
+  DeleteTaskRequest,
   GetTaskRequest,
   ListTasksRequest,
   ListTasksResponse,
   Task,
 } from 'src/stubs/task/v1alpha/task';
+
 import { TaskService } from './task.service';
 
 @Controller()
@@ -37,10 +39,16 @@ export class TaskController {
     return res;
   }
 
-  // @GrpcMethod('TaskService')
-  // async DeleteTask(request: DeleteTaskRequest): Promise<Task> {
-  //   return this.taskService.remove(request.name as any) as any;
-  // }
+  @GrpcMethod('TaskService')
+  async DeleteTask(request: DeleteTaskRequest): Promise<Task> {
+    const task = request.id;
+
+    console.log('request', request);
+
+    console.log('task', task);
+
+    return this.taskService.remove(task) as any;
+  }
 
   @GrpcMethod('TaskService')
   async GetTask(request: GetTaskRequest): Promise<Task> {
