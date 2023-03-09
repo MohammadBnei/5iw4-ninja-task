@@ -1,13 +1,13 @@
+import ecsFormat from '@elastic/ecs-winston-format';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import Joi from 'joi';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
-import ecsFormat from '@elastic/ecs-winston-format';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
 import { TaskModule } from './task/task.module';
-import { ConfigModule } from '@nestjs/config';
-import Joi from 'joi';
 @Module({
   imports: [
     TaskModule,
@@ -16,7 +16,7 @@ import Joi from 'joi';
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test', 'provision')
           .default('development'),
-        PORT: Joi.number().default(5000),
+        PORT: Joi.number().default(5100),
         DATABASE_URL: Joi.string().required(),
       }),
     }),
