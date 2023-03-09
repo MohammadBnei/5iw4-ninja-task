@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import {
   CreateTaskRequest,
   GetTaskRequest,
@@ -8,7 +8,9 @@ import {
   ListTasksResponse,
   Status,
   Task,
+  UpdateTaskRequest,
 } from 'src/stubs/task/v1alpha/task';
+import { NotFoundError } from 'rxjs';
 
 @Controller()
 export class TaskController {
@@ -49,5 +51,50 @@ export class TaskController {
       dueDate: task.dueDate.toISOString(),
       status: Status[task.status],
     });
+  }
+
+  @GrpcMethod('TaskService')
+  async UpdateTask(request: UpdateTaskRequest): Promise<any> {
+    try {
+      const updatedTask = request.task;
+      const task = await this.taskService.findById(updatedTask.id);
+
+      if (task) {
+        const task = await this.taskService.update(
+          updatedTask.id,
+          updatedTask as any,
+        );
+
+        return Task.create({
+          title: task.title,
+          description: task.description,
+          dueDate: task.dueDate.toISOString(),
+          status: Status[task.status],
+        });
+      } else {
+        throw new RpcException("Task doesn't exist");
+      }
+    } catch (error) {
+      console.log(error.response.message);
+      return { error: error.response.message };
+    }
+  }
+
+  @GrpcMethod('TaskService')
+  async DeleteTask(request: GetTaskRequest): Promise<any> {
+    try {
+      const task = await this.taskService.findById(request.id);
+
+      if (task) {
+        await this.taskService.remove(request.id);
+
+        return { message: 'Task deleted successfully' };
+      } else {
+        throw new RpcException("Task doesn't exist");
+      }
+    } catch (error) {
+      console.log(error.response.message);
+      return { error: error.response.message };
+    }
   }
 }

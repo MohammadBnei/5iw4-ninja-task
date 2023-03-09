@@ -81,5 +81,5 @@ message UpdateTaskRequest {
 
 message DeleteTaskRequest {
   // The resource name of the Task to be deleted.
-  string name = 1;
+  int32 id = 1;
 }

@@ -6,6 +6,7 @@ import {
 import { CreateTaskDto } from './dto/create-task.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Status } from '@prisma/client';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TaskService {
@@ -35,7 +36,7 @@ export class TaskService {
     return task;
   }
 
-  async update(id: number, data: CreateTaskDto) {
+  async update(id: number, data: UpdateTaskDto) {
     const task = await this.findById(id);
 
     try {

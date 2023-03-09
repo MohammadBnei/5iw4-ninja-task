@@ -135,9 +135,9 @@ export interface DeleteTaskRequest {
     /**
      * The resource name of the Task to be deleted.
      *
-     * @generated from protobuf field: string name = 1;
+     * @generated from protobuf field: int32 id = 1;
      */
-    name: string;
+    id: number;
 }
 /**
  * @generated from protobuf enum task.v1alpha.Status
@@ -505,11 +505,11 @@ export const UpdateTaskRequest = new UpdateTaskRequest$Type();
 class DeleteTaskRequest$Type extends MessageType<DeleteTaskRequest> {
     constructor() {
         super("task.v1alpha.DeleteTaskRequest", [
-            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<DeleteTaskRequest>): DeleteTaskRequest {
-        const message = { name: "" };
+        const message = { id: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<DeleteTaskRequest>(this, message, value);
@@ -520,8 +520,8 @@ class DeleteTaskRequest$Type extends MessageType<DeleteTaskRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string name */ 1:
-                    message.name = reader.string();
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -535,9 +535,9 @@ class DeleteTaskRequest$Type extends MessageType<DeleteTaskRequest> {
         return message;
     }
     internalBinaryWrite(message: DeleteTaskRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string name = 1; */
-        if (message.name !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
