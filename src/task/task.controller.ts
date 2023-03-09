@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import {
   CreateTaskRequest,
   DeleteTaskRequest,
@@ -42,9 +42,15 @@ export class TaskController {
 
   @GrpcMethod('TaskService')
   async GetTask(request: GetTaskRequest): Promise<Task> {
-    const task = request.id;
+    try {
+      const task = request.id;
 
-    return this.taskService.findById(task) as any;
+      return this.taskService.findById(task) as any;
+    } catch (error) {
+      console.log('error', error);
+
+      throw new RpcException(error.message);
+    }
   }
 
   @GrpcMethod('TaskService')
