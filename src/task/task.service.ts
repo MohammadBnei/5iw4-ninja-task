@@ -3,8 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateTaskDto } from './dto/create-task.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateTaskDto } from './dto/create-task.dto';
 
 @Injectable()
 export class TaskService {
@@ -21,14 +21,20 @@ export class TaskService {
   }
 
   async findById(id: number) {
-    const task = await this.prisma.task.findUnique({
-      where: { id },
-    });
-    if (!task) {
-      throw new NotFoundException('Task not found');
-    }
+    try {
+      const task = await this.prisma.task.findUnique({
+        where: { id },
+      });
+      if (!task) {
+        throw new NotFoundException('Task not found');
+      }
 
-    return task;
+      return task;
+    } catch (error) {
+      if (error?.code === 'P2002') {
+        throw new Error(`Task with id ${id} not found`);
+      }
+    }
   }
 
   async update(id: number, data: CreateTaskDto) {
