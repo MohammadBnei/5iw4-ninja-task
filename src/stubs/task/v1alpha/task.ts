@@ -72,7 +72,7 @@ export interface ListTasksResponse {
      * The field name should match the noun "Task" in the method name.
      * There will be a maximum number of items returned based on the page_size field in the request.
      *
-     * @generated from protobuf field: repeated task.v1alpha.Task Tasks = 1 [json_name = "Tasks"];
+     * @generated from protobuf field: repeated task.v1alpha.Task tasks = 1;
      */
     tasks: Task[];
     /**
@@ -106,14 +106,14 @@ export interface CreateTaskRequest {
     /**
      * The Task id to use for this Task.
      *
-     * @generated from protobuf field: string Task_id = 2 [json_name = "TaskId"];
+     * @generated from protobuf field: string task_id = 2;
      */
     taskId: string;
     /**
      * The Task resource to create.
      * The field name should match the Noun in the method name.
      *
-     * @generated from protobuf field: task.v1alpha.Task Task = 3 [json_name = "Task"];
+     * @generated from protobuf field: task.v1alpha.Task task = 3;
      */
     task?: Task;
 }
@@ -124,7 +124,7 @@ export interface UpdateTaskRequest {
     /**
      * The Task resource which replaces the resource on the server.
      *
-     * @generated from protobuf field: task.v1alpha.Task Task = 1 [json_name = "Task"];
+     * @generated from protobuf field: task.v1alpha.Task task = 1;
      */
     task?: Task;
 }
@@ -296,7 +296,7 @@ export const ListTasksRequest = new ListTasksRequest$Type();
 class ListTasksResponse$Type extends MessageType<ListTasksResponse> {
     constructor() {
         super("task.v1alpha.ListTasksResponse", [
-            { no: 1, name: "Tasks", kind: "message", jsonName: "Tasks", repeat: 1 /*RepeatType.PACKED*/, T: () => Task },
+            { no: 1, name: "tasks", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Task },
             { no: 2, name: "next_page_token", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
@@ -312,7 +312,7 @@ class ListTasksResponse$Type extends MessageType<ListTasksResponse> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* repeated task.v1alpha.Task Tasks = 1 [json_name = "Tasks"];*/ 1:
+                case /* repeated task.v1alpha.Task tasks */ 1:
                     message.tasks.push(Task.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 case /* string next_page_token */ 2:
@@ -330,7 +330,7 @@ class ListTasksResponse$Type extends MessageType<ListTasksResponse> {
         return message;
     }
     internalBinaryWrite(message: ListTasksResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* repeated task.v1alpha.Task Tasks = 1 [json_name = "Tasks"]; */
+        /* repeated task.v1alpha.Task tasks = 1; */
         for (let i = 0; i < message.tasks.length; i++)
             Task.internalBinaryWrite(message.tasks[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
         /* string next_page_token = 2; */
@@ -398,8 +398,8 @@ class CreateTaskRequest$Type extends MessageType<CreateTaskRequest> {
     constructor() {
         super("task.v1alpha.CreateTaskRequest", [
             { no: 1, name: "parent", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "Task_id", kind: "scalar", jsonName: "TaskId", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "Task", kind: "message", jsonName: "Task", T: () => Task }
+            { no: 2, name: "task_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "task", kind: "message", T: () => Task }
         ]);
     }
     create(value?: PartialMessage<CreateTaskRequest>): CreateTaskRequest {
@@ -417,10 +417,10 @@ class CreateTaskRequest$Type extends MessageType<CreateTaskRequest> {
                 case /* string parent */ 1:
                     message.parent = reader.string();
                     break;
-                case /* string Task_id = 2 [json_name = "TaskId"];*/ 2:
+                case /* string task_id */ 2:
                     message.taskId = reader.string();
                     break;
-                case /* task.v1alpha.Task Task = 3 [json_name = "Task"];*/ 3:
+                case /* task.v1alpha.Task task */ 3:
                     message.task = Task.internalBinaryRead(reader, reader.uint32(), options, message.task);
                     break;
                 default:
@@ -438,10 +438,10 @@ class CreateTaskRequest$Type extends MessageType<CreateTaskRequest> {
         /* string parent = 1; */
         if (message.parent !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.parent);
-        /* string Task_id = 2 [json_name = "TaskId"]; */
+        /* string task_id = 2; */
         if (message.taskId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.taskId);
-        /* task.v1alpha.Task Task = 3 [json_name = "Task"]; */
+        /* task.v1alpha.Task task = 3; */
         if (message.task)
             Task.internalBinaryWrite(message.task, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
@@ -458,7 +458,7 @@ export const CreateTaskRequest = new CreateTaskRequest$Type();
 class UpdateTaskRequest$Type extends MessageType<UpdateTaskRequest> {
     constructor() {
         super("task.v1alpha.UpdateTaskRequest", [
-            { no: 1, name: "Task", kind: "message", jsonName: "Task", T: () => Task }
+            { no: 1, name: "task", kind: "message", T: () => Task }
         ]);
     }
     create(value?: PartialMessage<UpdateTaskRequest>): UpdateTaskRequest {
@@ -473,7 +473,7 @@ class UpdateTaskRequest$Type extends MessageType<UpdateTaskRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* task.v1alpha.Task Task = 1 [json_name = "Task"];*/ 1:
+                case /* task.v1alpha.Task task */ 1:
                     message.task = Task.internalBinaryRead(reader, reader.uint32(), options, message.task);
                     break;
                 default:
@@ -488,7 +488,7 @@ class UpdateTaskRequest$Type extends MessageType<UpdateTaskRequest> {
         return message;
     }
     internalBinaryWrite(message: UpdateTaskRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* task.v1alpha.Task Task = 1 [json_name = "Task"]; */
+        /* task.v1alpha.Task task = 1; */
         if (message.task)
             Task.internalBinaryWrite(message.task, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;

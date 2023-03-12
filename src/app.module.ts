@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
 import { TaskModule } from './task/task.module';
 import { ConfigModule } from '@nestjs/config';
+import { MapperService } from './mapper/mapper.service';
 import Joi from 'joi';
 @Module({
   imports: [
@@ -38,6 +39,6 @@ import Joi from 'joi';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, MapperService],
 })
 export class AppModule {}
