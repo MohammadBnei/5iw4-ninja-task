@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: 5iw4
+      POSTGRES_USER: usser
+      POSTGRES_DB: task
+    ports:
+      - 5432:5432
+      

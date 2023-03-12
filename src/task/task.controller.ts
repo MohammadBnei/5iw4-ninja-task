@@ -5,15 +5,18 @@ import {
   CreateTaskRequest,
   ListTasksRequest,
   ListTasksResponse,
+  UpdateTaskRequest,
+  GetTaskRequest,
   Status,
   Task,
+  DeleteTaskRequest,
 } from 'src/stubs/task/v1alpha/task';
 
 @Controller()
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
-  @GrpcMethod('TaskService')
+  @GrpcMethod('TaskService', 'CreateTask')
   createTask(data: CreateTaskRequest) {
     const newTask = data.task;
 
@@ -29,6 +32,8 @@ export class TaskController {
       tasks: tasks.map((t) =>
         Task.create({
           title: t.title,
+          status: Status[t.status],
+          description: t.description,
         }),
       ),
     });
@@ -37,4 +42,36 @@ export class TaskController {
 
     return res;
   }
+
+  @GrpcMethod('TaskService')
+  async UpdateTask(request: UpdateTaskRequest) {
+    const task = request.task;
+    return this.taskService.update(request.task.id, task as any);
+  }
+
+
+  @GrpcMethod('TaskService')
+  async GetTask(request: GetTaskRequest) {
+    const id = Number(request.name);
+    return this.taskService.findOne(id)
+  }
+
+  @GrpcMethod('TaskService')
+  async DeleteTask(request: DeleteTaskRequest) {
+    const id = Number(request.name);
+    return this.taskService.remove(id);
+  }
+
+
+
+
+  // @GrpcMethod('TaskService')
+  // async UpdateTask(request: UpdateTaskRequest): Promise<Task> {
+  //   const task = await this.taskService.update(request.id, request.task);
+
+  //   return Task.create({
+  //     title: task.title,
+  //   });
+  // }
+
 }
