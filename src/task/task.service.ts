@@ -40,6 +40,10 @@ export class TaskService {
     const task = await this.findById(id);
 
     try {
+      if (data.dueDate) {
+        data.dueDate = new Date(data.dueDate);
+      }
+
       return this.prisma.task.update({
         where: { id },
         data,
