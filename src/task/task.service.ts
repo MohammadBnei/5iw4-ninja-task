@@ -1,19 +1,30 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateTaskDto } from './dto/create-task.dto';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Task } from '@prisma/client';
+import {
+  GrpcAlreadyExists,
+  GrpcNotFoundException,
+  GrpcUnknownException,
+} from 'src/exceptions/grpc.exceptions';
 
 @Injectable()
 export class TaskService {
   constructor(private prisma: PrismaService) {}
 
-  create(createTaskDto: CreateTaskDto) {
-    return this.prisma.task.create({
-      data: createTaskDto,
-    });
+  create(task: Task) {
+    let createdTask = null;
+    try {
+      createdTask = this.prisma.task.create({
+        data: task,
+      });
+    } catch (error) {
+      if (error?.code === 'P2002') {
+        throw new GrpcAlreadyExists(`Task with id ${task.id} already exists`);
+      }
+      throw new GrpcUnknownException(error.message);
+    }
+
+    return createdTask;
   }
 
   findAll() {
@@ -25,35 +36,42 @@ export class TaskService {
       where: { id },
     });
     if (!task) {
-      throw new NotFoundException('Task not found');
+      throw new GrpcNotFoundException(`Task with id ${id} not found`);
     }
 
     return task;
   }
 
-  async update(id: number, data: CreateTaskDto) {
-    const task = await this.findById(id);
-
+  async update(id: number, data: Task) {
+    let updatedTask = null;
     try {
-      return this.prisma.task.update({
+      updatedTask = await this.prisma.task.update({
         where: { id },
         data,
       });
     } catch (error) {
-      throw new Error(error.message);
+      if (error?.code === 'P2025') {
+        throw new GrpcNotFoundException(`Task with id ${id} not found`);
+      }
+      throw new GrpcUnknownException(error.message);
     }
+
+    return updatedTask;
   }
 
   async remove(id: number) {
+    let deletedTask = null;
     try {
-      return await this.prisma.task.delete({
+      deletedTask = await this.prisma.task.delete({
         where: { id },
       });
     } catch (error) {
       if (error?.code === 'P2025') {
-        throw new NotFoundException(`Task with id ${id} not found`);
+        throw new GrpcNotFoundException(`Task with id ${id} not found`);
       }
-      throw new BadRequestException(error.message);
+      throw new GrpcUnknownException(error.message);
     }
+
+    return deletedTask;
   }
 }
