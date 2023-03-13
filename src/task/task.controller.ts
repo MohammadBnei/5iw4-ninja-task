@@ -7,6 +7,9 @@ import {
   ListTasksResponse,
   Status,
   Task,
+  DeleteTaskRequest,
+  UpdateTaskRequest,
+  GetTaskRequest,
 } from 'src/stubs/task/v1alpha/task';
 
 @Controller()
@@ -36,5 +39,26 @@ export class TaskController {
     console.log({ res });
 
     return res;
+  }
+
+  @GrpcMethod('TaskService')
+  updateTask(data: UpdateTaskRequest) {
+    const task = data.task;
+
+    return this.taskService.update(task.id, task as any);
+  }
+
+  @GrpcMethod('TaskService')
+  deleteTask(data: DeleteTaskRequest) {
+    const id = data.id;
+
+    return this.taskService.remove(id);
+  }
+  
+  @GrpcMethod('TaskService')
+  getTask(data: GetTaskRequest) {
+    const id = data.id;
+
+    return this.taskService.remove(id);
   }
 }
