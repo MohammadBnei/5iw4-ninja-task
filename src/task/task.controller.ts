@@ -18,15 +18,11 @@ export class TaskController {
 
   @GrpcMethod('TaskService')
   createTask(data: CreateTaskRequest) {
-    if (
-      !data.task.title ||
-      !data.task.description ||
-      !data.task.dueDate ||
-      !data.task.status
-    ) {
-      throw new RpcException('The task title, description, dueDate or Status is missing');
-    }
     const newTask = data.task;
+
+    if(!newTask.title || !newTask.description || !newTask.status || !newTask.dueDate) {
+      throw new RpcException('Task is not valid, missing fields');
+    }
 
     return this.taskService.create(newTask as any);
   }
@@ -37,7 +33,7 @@ export class TaskController {
     console.log({ tasks });
 
     if(!tasks) {
-      throw new RpcException('No tasks were found');
+      throw new RpcException('No tasks found');
     }
 
     const res = ListTasksResponse.create({
@@ -55,17 +51,11 @@ export class TaskController {
 
   @GrpcMethod('TaskService')
   updateTask(data: UpdateTaskRequest) {
-    
-    if (
-      !data.task.title ||
-      !data.task.description ||
-      !data.task.dueDate ||
-      !data.task.status
-    ) {
-      throw new RpcException('The task title, description, dueDate or Status is missing');
-    }
-
     const task = data.task;
+
+    if(!task.id) {
+      throw new RpcException('Task is not valid, missing fields');
+    }
 
     return this.taskService.update(task.id, task as any);
   }
@@ -74,8 +64,8 @@ export class TaskController {
   deleteTask(data: DeleteTaskRequest) {
     const id = data.id;
 
-    if (!id) {
-      throw new RpcException('The task id is missing or not found');
+    if(!id) {
+      throw new RpcException('Task not found or invalid id');
     }
 
     return this.taskService.remove(id);
@@ -85,10 +75,10 @@ export class TaskController {
   getTask(data: GetTaskRequest) {
     const id = data.id;
 
-    if (!id) {
-      throw new RpcException('The task was not found');
+    if(!id) {
+      throw new RpcException('Task not found or invalid id');
     }
 
-    return this.taskService.remove(id);
+    return this.taskService.findById(id);
   }
 }
