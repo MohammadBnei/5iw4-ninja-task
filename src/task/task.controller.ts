@@ -24,10 +24,7 @@ export class TaskController {
       !data.task.dueDate ||
       !data.task.status
     ) {
-      throw new RpcException({
-        code: 400,
-        message: 'The task title, description, dueDate or Status is missing',
-      });
+      throw new RpcException('The task title, description, dueDate or Status is missing');
     }
     const newTask = data.task;
 
@@ -40,10 +37,7 @@ export class TaskController {
     console.log({ tasks });
 
     if(!tasks) {
-      throw new RpcException({
-        code: 404,
-        message: 'No tasks were found',
-      });
+      throw new RpcException('No tasks were found');
     }
 
     const res = ListTasksResponse.create({
@@ -68,10 +62,7 @@ export class TaskController {
       !data.task.dueDate ||
       !data.task.status
     ) {
-      throw new RpcException({
-        code: 400,
-        message: 'The task title, description, dueDate or Status is missing',
-      });
+      throw new RpcException('The task title, description, dueDate or Status is missing');
     }
 
     const task = data.task;
@@ -84,10 +75,7 @@ export class TaskController {
     const id = data.id;
 
     if (!id) {
-      throw new RpcException({
-        code: 404,
-        message: 'The task id is missing or not found',
-      });
+      throw new RpcException('The task id is missing or not found');
     }
 
     return this.taskService.remove(id);
@@ -98,10 +86,7 @@ export class TaskController {
     const id = data.id;
 
     if (!id) {
-      throw new RpcException({
-        code: 404,
-        message: 'The task was not found',
-      });
+      throw new RpcException('The task was not found');
     }
 
     return this.taskService.remove(id);
