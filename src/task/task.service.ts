@@ -1,5 +1,7 @@
+// Jérémy JUMPERTZ 5IW4
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,9 +13,16 @@ export class TaskService {
   constructor(private prisma: PrismaService) {}
 
   create(createTaskDto: CreateTaskDto) {
-    return this.prisma.task.create({
-      data: createTaskDto,
-    });
+    try {
+      return this.prisma.task.create({
+        data: createTaskDto,
+      });
+    } catch (error) {
+      if (error?.code === 'P2002') {
+        throw new ConflictException('Task already exists');
+      }
+      throw new BadRequestException(error.message);
+    }
   }
 
   findAll() {
