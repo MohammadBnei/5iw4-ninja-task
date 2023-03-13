@@ -29,13 +29,26 @@ export class TaskService {
     return this.prisma.task.findMany();
   }
 
+  async findPage( pageSize : number , pageToken : number ) {
+    const where = pageToken ? { id:  pageToken  } : {};
+    const tasks = await this.prisma.task.findMany({
+      take: pageSize,
+      where,
+      orderBy: { id: 'asc' },
+    });
+    if (!tasks || tasks.length === 0) {
+      throw new NotFoundException(`tasks with id ${pageToken}  not found`);
+    }
+    return tasks;
+  }
+
   update(id: number, updateTaskDto: UpdateTaskDto) {
     const task = this.prisma.task.update({
       where: { id: id },
       data: updateTaskDto,
     });
     if (!task) {
-      throw new Error(`task with id ${id}  not found`);
+      throw new NotFoundException(`task with id ${id}  not found`);
     }
     return task;
   }
@@ -45,7 +58,7 @@ export class TaskService {
       where: { id: id },
     });
     if (!task) {
-      throw new Error(`task with id ${id}  not found`);
+      throw new NotFoundException(`task with id ${id}  not found`);
     }
     return task;
   }

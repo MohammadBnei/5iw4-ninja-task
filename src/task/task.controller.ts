@@ -25,9 +25,13 @@ export class TaskController {
 
   @GrpcMethod('TaskService')
   async ListTasks(request: ListTasksRequest): Promise<ListTasksResponse> {
-    const tasks = await this.taskService.findAll();
-    console.log({ tasks });
+    // const tasks = await this.taskService.findAll();
 
+    const page_token = Number(request.pageToken);
+    const page_size = request.pageSize;
+    const tasks = await this.taskService.findPage(  page_size , page_token );
+
+    console.log({ tasks });
     const res = ListTasksResponse.create({
       tasks: tasks.map((t) =>
         Task.create({
@@ -36,6 +40,7 @@ export class TaskController {
           description: t.description,
         }),
       ),
+      nextPageToken: tasks.length > 0 ? tasks[tasks.length - 1].id.toString() : null,
     });
 
     console.log({ res });
