@@ -1,3 +1,5 @@
+/** GEOFFRON Thomas 5IW4 */
+
 import {
   BadRequestException,
   Injectable,
@@ -5,12 +7,17 @@ import {
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Status } from '@prisma/client';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TaskService {
   constructor(private prisma: PrismaService) {}
 
   create(createTaskDto: CreateTaskDto) {
+    createTaskDto.dueDate = new Date(createTaskDto.dueDate);
+    createTaskDto.status = Status.todo;
+
     return this.prisma.task.create({
       data: createTaskDto,
     });
@@ -31,10 +38,14 @@ export class TaskService {
     return task;
   }
 
-  async update(id: number, data: CreateTaskDto) {
+  async update(id: number, data: UpdateTaskDto) {
     const task = await this.findById(id);
 
     try {
+      if (data.dueDate) {
+        data.dueDate = new Date(data.dueDate);
+      }
+
       return this.prisma.task.update({
         where: { id },
         data,
