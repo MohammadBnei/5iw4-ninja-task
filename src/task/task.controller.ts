@@ -1,3 +1,5 @@
+/** GEOFFRON Thomas 5IW4 */
+
 import { Controller } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { GrpcMethod, RpcException } from '@nestjs/microservices';
@@ -11,7 +13,6 @@ import {
   UpdateTaskRequest,
 } from 'src/stubs/task/v1alpha/task';
 import { Status as OtherStatus } from '@prisma/client';
-import { type } from 'os';
 
 @Controller()
 export class TaskController {
@@ -27,8 +28,7 @@ export class TaskController {
     } else if (
       !data.task.title ||
       !data.task.description ||
-      !data.task.dueDate ||
-      !data.task.status
+      !data.task.dueDate
     ) {
       throw new RpcException({
         code: 400,
