@@ -1,3 +1,4 @@
+//RENOUX Océane 5IW4
 import { Controller } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { GrpcMethod } from '@nestjs/microservices';
@@ -66,17 +67,5 @@ export class TaskController {
     const id = Number(request.name);
     return this.taskService.remove(id);
   }
-
-
-
-
-  // @GrpcMethod('TaskService')
-  // async UpdateTask(request: UpdateTaskRequest): Promise<Task> {
-  //   const task = await this.taskService.update(request.id, request.task);
-
-  //   return Task.create({
-  //     title: task.title,
-  //   });
-  // }
 
 }
