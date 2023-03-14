@@ -31,6 +31,17 @@ export class TaskService {
     return task;
   }
 
+  async findByName(name: string) {
+    const task = await this.prisma.task.findUnique({
+      where: { name },
+    });
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+
+    return task;
+  }
+
   async update(id: number, data: CreateTaskDto) {
     const task = await this.findById(id);
 
