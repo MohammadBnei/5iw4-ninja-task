@@ -7,6 +7,8 @@ import {
   ListTasksResponse,
   Status,
   Task,
+  GetTaskRequest,
+  UpdateTaskRequest,
 } from 'src/stubs/task/v1alpha/task';
 
 @Controller()
@@ -36,5 +38,20 @@ export class TaskController {
     console.log({ res });
 
     return res;
+  }
+
+  @GrpcMethod('TaskService')
+  getTask(data: GetTaskRequest) {
+    return this.taskService.findById(data.id);
+  }
+
+  @GrpcMethod('TaskService')
+  updateTask(updateData: UpdateTaskRequest) {
+    return this.taskService.update(updateData.task.id, updateData.task as any);
+  }
+
+  @GrpcMethod('TaskService')
+  deleteTask(data: GetTaskRequest) {
+    return this.taskService.remove(data.id);
   }
 }

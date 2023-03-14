@@ -53,7 +53,16 @@ export class TaskService {
       if (error?.code === 'P2025') {
         throw new NotFoundException(`Task with id ${id} not found`);
       }
-      throw new BadRequestException(error.message);
+      if (error?.code === 'P2002') {
+        throw new BadRequestException('Unique constraint failed on the {constraint}');
+      }
+      if (error?.code === 'P2003') {
+        throw new BadRequestException('Foreign key constraint failed on the field: {field_name}');
+      }
+      if (error?.code === 'P2004') {
+        throw new BadRequestException('A constraint failed on the database: {database_error}');
+      }
+      throw new BadRequestException('');
     }
   }
 }
