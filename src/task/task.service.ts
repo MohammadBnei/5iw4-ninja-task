@@ -1,10 +1,8 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import {BadRequestException, Injectable, NotFoundException,} from '@nestjs/common';
+import {CreateTaskDto} from './dto/create-task.dto';
+import {PrismaService} from '../prisma/prisma.service';
+import {UpdateTaskDto} from "./dto/update-task.dto";
+import {RpcException} from "@nestjs/microservices";
 
 @Injectable()
 export class TaskService {
@@ -16,8 +14,15 @@ export class TaskService {
     });
   }
 
-  findAll() {
-    return this.prisma.task.findMany();
+  findAll(pageSize: number, pageToken?: string) {
+    let items = this.prisma.task.findMany({
+      take: pageSize,
+      where: pageToken ? { id: Number(pageToken) } : undefined,
+      orderBy: { id: 'asc' },
+    })
+    console.log(items)
+
+    return items
   }
 
   async findById(id: number) {
@@ -31,9 +36,7 @@ export class TaskService {
     return task;
   }
 
-  async update(id: number, data: CreateTaskDto) {
-    const task = await this.findById(id);
-
+  async update(id: number, data: UpdateTaskDto) {
     try {
       return this.prisma.task.update({
         where: { id },
@@ -51,7 +54,7 @@ export class TaskService {
       });
     } catch (error) {
       if (error?.code === 'P2025') {
-        throw new NotFoundException(`Task with id ${id} not found`);
+        throw new RpcException(`Task with id ${id} not found`);
       }
       throw new BadRequestException(error.message);
     }
