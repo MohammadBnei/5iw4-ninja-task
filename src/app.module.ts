@@ -7,6 +7,9 @@ import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
 import { TaskModule } from './task/task.module';
 import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER } from "@nestjs/core";
+import { GrpcServerExceptionFilter } from "nestjs-grpc-exceptions";
+
 import Joi from 'joi';
 @Module({
   imports: [
@@ -38,6 +41,6 @@ import Joi from 'joi';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, APP_FILTER,  GrpcServerExceptionFilter],
 })
 export class AppModule {}
