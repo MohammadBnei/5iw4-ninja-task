@@ -3,6 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import {
+  GrpcNotFoundException,
+  GrpcInvalidArgumentException,
+} from "nestjs-grpc-exceptions";
 import { CreateTaskDto } from './dto/create-task.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -25,7 +29,7 @@ export class TaskService {
       where: { id },
     });
     if (!task) {
-      throw new NotFoundException('Task not found');
+      throw new GrpcNotFoundException('Task not found');
     }
 
     return task;
@@ -51,7 +55,7 @@ export class TaskService {
       });
     } catch (error) {
       if (error?.code === 'P2025') {
-        throw new NotFoundException(`Task with id ${id} not found`);
+        throw new GrpcNotFoundException(`Task with id ${id} not found`);
       }
       throw new BadRequestException(error.message);
     }
