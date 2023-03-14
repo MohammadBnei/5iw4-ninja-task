@@ -45,17 +45,28 @@ export class TaskController {
   @GrpcMethod('TaskService')
   async ListTasks(request: ListTasksRequest): Promise<ListTasksResponse> {
     try {
-      const tasks = await this.taskService.findAll();
+      const { pageSize = 10, pageToken = '' } = request;
+      const tasks = await this.taskService.findAll(pageSize, pageToken);
 
-      const res = ListTasksResponse.create({
+      const statusLookup = {
+        [StatusEnum.TODO]: Status.todo,
+        [StatusEnum.DOING]: Status.doing,
+        [StatusEnum.DONE]: Status.done,
+      };
+
+      return ListTasksResponse.create({
         tasks: tasks.map((t) =>
-          Task.create({
-            title: t.title,
-          }),
+            Task.create({
+              id: t.id,
+              title: t.title,
+              description: t.description,
+              dueDate: t.dueDate.toISOString(),
+              status: (statusLookup[t.status] || Status.todo) as any,
+            }),
         ),
+        nextPageToken: tasks.length === pageSize ? String(tasks[tasks.length - 1].id) : '',
       });
 
-      return res;
     } catch (error) {
       throw new RpcException('An error occurred while listing tasks');
     }

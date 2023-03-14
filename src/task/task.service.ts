@@ -14,8 +14,15 @@ export class TaskService {
     });
   }
 
-  findAll() {
-    return this.prisma.task.findMany();
+  findAll(pageSize: number, pageToken?: string) {
+    let items = this.prisma.task.findMany({
+      take: pageSize,
+      where: pageToken ? { id: Number(pageToken) } : undefined,
+      orderBy: { id: 'asc' },
+    })
+    console.log(items)
+
+    return items
   }
 
   async findById(id: number) {
