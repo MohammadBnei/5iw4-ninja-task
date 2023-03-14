@@ -44,17 +44,21 @@ export class TaskController {
 
   @GrpcMethod('TaskService')
   async ListTasks(request: ListTasksRequest): Promise<ListTasksResponse> {
-    const tasks = await this.taskService.findAll();
+    try {
+      const tasks = await this.taskService.findAll();
 
-    const res = ListTasksResponse.create({
-      tasks: tasks.map((t) =>
-        Task.create({
-          title: t.title,
-        }),
-      ),
-    });
+      const res = ListTasksResponse.create({
+        tasks: tasks.map((t) =>
+          Task.create({
+            title: t.title,
+          }),
+        ),
+      });
 
-    return res;
+      return res;
+    } catch (error) {
+      throw new RpcException('An error occurred while listing tasks');
+    }
   }
 
   @GrpcMethod('TaskService')
