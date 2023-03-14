@@ -1,11 +1,8 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import {BadRequestException, Injectable, NotFoundException,} from '@nestjs/common';
+import {CreateTaskDto} from './dto/create-task.dto';
+import {PrismaService} from '../prisma/prisma.service';
 import {UpdateTaskDto} from "./dto/update-task.dto";
+import {RpcException} from "@nestjs/microservices";
 
 @Injectable()
 export class TaskService {
@@ -33,8 +30,6 @@ export class TaskService {
   }
 
   async update(id: number, data: UpdateTaskDto) {
-    const task = await this.findById(id);
-
     try {
       return this.prisma.task.update({
         where: { id },
@@ -52,7 +47,7 @@ export class TaskService {
       });
     } catch (error) {
       if (error?.code === 'P2025') {
-        throw new NotFoundException(`Task with id ${id} not found`);
+        throw new RpcException(`Task with id ${id} not found`);
       }
       throw new BadRequestException(error.message);
     }
