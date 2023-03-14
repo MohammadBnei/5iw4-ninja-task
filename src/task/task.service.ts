@@ -3,11 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateTaskDto } from './dto/create-task.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateTaskDto } from './dto/create-task.dto';
 
 @Injectable()
 export class TaskService {
+  delete(id: any) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private prisma: PrismaService) {}
 
   create(createTaskDto: CreateTaskDto) {
@@ -40,7 +43,18 @@ export class TaskService {
         data,
       });
     } catch (error) {
-      throw new Error(error.message);
+      if (error?.code === 'P2025') {
+        throw new NotFoundException(`Task with id ${id} not found`);
+      }
+      if (error?.code === 'P2002') {
+        throw new BadRequestException(`Invalid id ${id}`);
+      }
+      if (error?.code === 'P2003') {
+        throw new BadRequestException(
+          `Foreign key constraint failed on the Task with id ${id}`,
+        );
+      }
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -52,6 +66,14 @@ export class TaskService {
     } catch (error) {
       if (error?.code === 'P2025') {
         throw new NotFoundException(`Task with id ${id} not found`);
+      }
+      if (error?.code === 'P2002') {
+        throw new BadRequestException(`Invalid id ${id}`);
+      }
+      if (error?.code === 'P2003') {
+        throw new BadRequestException(
+          `Foreign key constraint failed on the Task with id ${id}`,
+        );
       }
       throw new BadRequestException(error.message);
     }
