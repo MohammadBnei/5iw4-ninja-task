@@ -5,7 +5,6 @@ import {
   CreateTaskRequest,
   DeleteTaskRequest,
   GetTaskRequest,
-  ListTasksRequest,
   ListTasksResponse,
   Task,
   UpdateTaskRequest,
@@ -25,7 +24,7 @@ export class TaskController {
   }
 
   @GrpcMethod('TaskService')
-  async ListTasks(request: ListTasksRequest): Promise<ListTasksResponse> {
+  async ListTasks(): Promise<ListTasksResponse> {
     const tasks = await this.taskService.findAll();
 
     const res = ListTasksResponse.create({
